@@ -28,8 +28,8 @@ import { round } from '../utils/round';
 
 // compute sizes for column directed layouts
 export const computeColumnLayout = ({
-  photos, columns, containerWidth, margin,
-}) => {
+                                      photos, columns, containerWidth, margin,
+                                    }) => {
   // calculate each colWidth based on total width and column amount
   const colWidth = (containerWidth - margin * 2 * columns) / columns;
 

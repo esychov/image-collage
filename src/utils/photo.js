@@ -8,6 +8,7 @@ function downloadPhoto(uri) {
   return new Promise((resolve, reject) => {
     request({ url: uri, encoding: null }, (err, res, body) => {
       if (err) return reject(err);
+      if (res.statusCode !== 200 || res.headers['content-type'].includes('text/html')) return reject("Wrong url");
       return resolve(body);
     });
   });
@@ -20,15 +21,16 @@ function downloadPhoto(uri) {
 export function getPhoto(src) {
   if (src instanceof Buffer) {
     return src;
-  } if (typeof src === 'string') {
+  }
+  if (typeof src === 'string') {
     if (/^http/.test(src) || /^ftp/.test(src)) {
       return downloadPhoto(src).catch(() => {
-        throw new Error(`Could not download url source: ${src}`);
+        throw new Error(`Could not download url source: ${ src }`);
       });
     }
     return fs.readFileAsync(src).catch(() => {
-      throw new Error(`Could not load file source: ${src}`);
+      throw new Error(`Could not load file source: ${ src }`);
     });
   }
-  throw new Error(`Unsupported source type: ${src}`);
+  throw new Error(`Unsupported source type: ${ src }`);
 }

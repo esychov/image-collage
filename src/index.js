@@ -5,7 +5,7 @@ import { computeRowLayout } from './layouts/justified';
 import { findIdealNodeSearch } from './utils/findIdealNodeSearch';
 import { getPhoto } from './utils/photo';
 
-function getRowLayout(photos, containerWidth, targetRowHeight = 300) {
+function getRowLayout(photos, containerWidth, columnsCount, targetRowHeight = 300, spacing = 0) {
   let limitNodeSearch = 2;
 
   if (containerWidth >= 450) {
@@ -14,7 +14,7 @@ function getRowLayout(photos, containerWidth, targetRowHeight = 300) {
 
   const thumbs = computeRowLayout({
     containerWidth,
-    limitNodeSearch,
+    limitNodeSearch: columnsCount || limitNodeSearch,
     targetRowHeight,
     margin: 0,
     photos,
@@ -35,46 +35,53 @@ function getRowLayout(photos, containerWidth, targetRowHeight = 300) {
     currentRow.push(thumb);
   });
 
+  if (currentRow.length == 1) {
+    currentRow[0].width += spacing;
+  }
   if (currentRow.length > 0) rows.push(currentRow);
 
   return rows;
 }
 
-function getCanvasWidth(rows) {
-  return rows[0].reduce((width, element) => width + element.width, 0);
+function getCanvasWidth(rows, spacing) {
+  const additionalSpace = (Math.ceil(rows[0].length / 2) * spacing) + (spacing * 2);
+  return rows[0].reduce((width, element) => width + element.width, 0) + additionalSpace;
 }
 
-function getCanvasHeight(rows) {
-  return rows.reduce((height, row) => height + row[0].height, 0);
+function getCanvasHeight(rows, spacing) {
+  const additionalSpace = (Math.ceil(rows.length / 2) * spacing) + (rows.length > 1 ? spacing * 2 : spacing);
+  return rows.reduce((height, row) => height + row[0].height, 0) + additionalSpace;
 }
 
-function getPositions(rows) {
-  let y = 0;
+function getPositions(rows, spacing = 0) {
+  let y = spacing;
 
   return rows.map((row) => {
-    let x = 0;
+    // let x = row.length > 1 || spacing == 0 ? 0 : spacing / 2;
+    let x = spacing;
     const position = row.map((thumb) => {
       const thumbX = x;
-      x += thumb.width;
+      x += thumb.width + spacing;
       return { x: thumbX, y };
     });
-    y += row[0].height;
+    y += row[0].height + spacing;
     return position;
   });
 }
 
 // eslint-disable-next-line import/prefer-default-export
-export async function createCollage(sources, maxWidth, mimeType = 'image/png') {
+export async function createCollage(sources, maxWidth, columnsCount, mimeType = 'image/png') {
+  const spacing = 10;
   const photos = await Promise.all(sources.map(getPhoto));
   const sizes = await Promise.all(photos.map(sizeOf));
   const photosWithSizes = photos.map((photo, index) => ({
     photo,
     ...sizes[index],
   }));
-  const rows = getRowLayout(photosWithSizes, maxWidth);
-  const canvasHeight = getCanvasHeight(rows);
-  const canvasWidth = getCanvasWidth(rows);
-  const positions = getPositions(rows);
+  const rows = getRowLayout(photosWithSizes, maxWidth, columnsCount, 300, spacing);
+  const canvasHeight = getCanvasHeight(rows, spacing);
+  const canvasWidth = getCanvasWidth(rows, spacing);
+  const positions = getPositions(rows, spacing);
 
   const canvasCollage = Canvas.createCanvas(canvasWidth, canvasHeight);
   const ctx = canvasCollage.getContext('2d');

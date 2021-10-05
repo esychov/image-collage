@@ -72,7 +72,7 @@ const buildPrecedentsMap = (graph, startNode, endNode) => {
   }
 
   if (typeof storedShortestPaths[endNode] === 'undefined') {
-    throw new Error(`There is no path from ${startNode} to ${endNode}`);
+    throw new Error(`There is no path from ${ startNode } to ${ endNode }`);
   }
 
   return precedentsMap;
