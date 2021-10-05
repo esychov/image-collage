@@ -1,4 +1,3 @@
-
 module.exports = [
   'https://images.unsplash.com/photo-1569219420570-273beaf1c05a?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max',
   'https://images.unsplash.com/photo-1569296226058-3b57006d13fd?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max',
