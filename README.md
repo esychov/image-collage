@@ -11,11 +11,11 @@ Turns an array of images into a photo collage
 
 ## Installation
 
-    npm install @esychov/image-collage --registry=https://npm.pkg.github.com/mtblc
+    npm install @esychov/image-collage --registry=https://npm.pkg.github.com/esychov
 
 or
 
-    yarn add @esychov/image-collage --registry=https://npm.pkg.github.com/mtblc
+    yarn add @esychov/image-collage --registry=https://npm.pkg.github.com/esychov
 
 ## Quick Example
 
