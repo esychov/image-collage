@@ -90,8 +90,9 @@ export async function createCollage(sources, maxWidth, columnsCount, mimeType = 
     row.forEach(({ height, width, photo }, j) => {
       const img = new Canvas.Image();
       const { x, y } = positions[i][j];
+
+      img.onload = () => ctx.drawImage(img, x, y, width, height)
       img.src = photo;
-      ctx.drawImage(img, x, y, width, height);
     });
   });
 
